@@ -1,12 +1,13 @@
 import { setError, setLoading, setQuestions } from "@/store/slices/quizSlice";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Initialize the API
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+class QuizHelper {
+  constructor() {
+    this.genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  }
 
-// Function to generate quiz questions based on subject
-export async function generateQuizQuestions(subjectName) {
+  async generateQuizQuestions(subjectName) {
     try {
       const prompt = `
         Generate exactly 5 multiple-choice questions for a ${subjectName} quiz.
@@ -27,13 +28,13 @@ export async function generateQuizQuestions(subjectName) {
         - The correct answer exists in the options.
         - Questions are engaging and relevant.
       `;
-  
-      const result = await model.generateContent(prompt);
+
+      const result = await this.model.generateContent(prompt);
       const response = await result.response.text();
       
       // Remove possible markdown code blocks
       const cleanResponse = response.replace(/```(json)?\n?|\n?```/g, '');
-  
+
       try {
         const parsedQuestions = JSON.parse(cleanResponse);
         return parsedQuestions?.questions || [];
@@ -46,14 +47,11 @@ export async function generateQuizQuestions(subjectName) {
       return [];
     }
   }
-  
 
-
-
-export const loadQuestions = async (subjectId, dispatch) => {
+  async loadQuestions(subjectId, dispatch) {
     dispatch(setLoading(true));
     try {
-      const generatedQuestions = await generateQuizQuestions(subjectId);
+      const generatedQuestions = await this.generateQuizQuestions(subjectId);
       
       if (Array.isArray(generatedQuestions) && generatedQuestions.length > 0) {
         dispatch(setQuestions(generatedQuestions));
@@ -65,5 +63,30 @@ export const loadQuestions = async (subjectId, dispatch) => {
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }
+
+  finderFunction(arr, key, value) {
+    return Array.isArray(arr) ? arr.find(ele => ele[key] === value) : false;
+  }
+
+  async validateAndLoad(subjects, subjectCode, navigate, setIsValidated, dispatch) {
+    if (!this.finderFunction(subjects, "code", subjectCode)) {
+      navigate("/", { 
+        replace: true,
+        state: { error: "Invalid subject selected" } 
+      });
+      return;
+    }
+    setIsValidated(true);
+    await this.loadQuestions(subjectCode, dispatch);
+  }
+
+
   
+}
+
+// Create a singleton instance
+const quizHelper = new QuizHelper();
+
+// Export the instance
+export default quizHelper;

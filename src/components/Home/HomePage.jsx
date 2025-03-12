@@ -8,8 +8,6 @@ import SubCardPage from './SubCardPage'
 
 
 const HomePage = () => {
-
-
   return (
     <div className="container mx-auto p-4 min-h-screen">
       <motion.h1 

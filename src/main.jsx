@@ -5,13 +5,22 @@ import App from "./App.jsx";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import { ThemeProvider } from "./components/theme-provider";
+import OfflineOnlineProvider from "./offline-online-provider";
+import { Toaster } from "./components/ui/sonner";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="quiz-ui-theme">
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </ThemeProvider>
+    <OfflineOnlineProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="quiz-ui-theme">
+        <Provider store={store}>
+          <Toaster
+            position="top-right"
+            richColors 
+            closeButton 
+          />
+          <App />
+        </Provider>
+      </ThemeProvider>
+    </OfflineOnlineProvider>
   </StrictMode>
 );

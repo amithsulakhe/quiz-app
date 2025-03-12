@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayot from "./RootLayot";
-import HomePage from "./pages/home/HomePage";
-import QuizPage from "./pages/quiz/QuizPage";
+import HomePage from "./components/Home/HomePage";
+import QuizPage from "./components/Quiz/QuizPage";
 import ErrorPage from "./components/error-page";
 
 const App = () => {
@@ -17,7 +17,7 @@ const App = () => {
           element:<HomePage />
         },
         {
-          path:"/quiz/:subjectId",
+          path:"/quiz/:subjectCode",
           element:<QuizPage />
         }
       ]

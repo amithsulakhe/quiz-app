@@ -12,14 +12,19 @@ import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import Loader from "./loader";
 import Validator from "./validator";
 import Error from "./error";
+import quizHelper from "@/utils/helperfunctions";
+import { subjects } from "@/utils/constant";
 
 const QuizPage = () => {
-  const { subjectId } = useParams();
+  const { subjectCode } = useParams();
+
+  const currentSubject=quizHelper.finderFunction(subjects, "code", subjectCode)?.title;
+
   const dispatch = useDispatch();
   const { answers, messages, isSubmitted } = useSelector((state) => state.quiz);
 
   const { loading, error, questions, isValidated } = useFetch(
-    subjectId,
+    subjectCode,
     dispatch
   );
 
@@ -73,7 +78,7 @@ const QuizPage = () => {
       <div className="w-[60%] space-y-6">
         <Card className="p-6">
           <h2 className="text-2xl font-bold mb-6 capitalize">
-            {subjectId} Quiz
+            {currentSubject} Quiz
           </h2>
           {questions.map((q) => (
             <div key={q.id} className="mb-6 space-y-4">

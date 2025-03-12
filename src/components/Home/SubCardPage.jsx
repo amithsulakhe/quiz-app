@@ -9,15 +9,18 @@ import {
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom";
+import { Badge } from "../ui/badge";
 
-const MotionCard = motion(Card)
+const MotionCard = motion.create(Card)
 
-const SubCardPage = ({id, title, description, icon:Icon, color, index}) => {
+
+const SubCardPage = ({id, code,title, description, icon:Icon, color, index}) => {
     const navigate = useNavigate();
 
-    const handleStartQuiz = (subjectId) => {
-      navigate(`/quiz/${subjectId}`);
+    const handleStartQuiz = (subjectCode) => {
+      navigate(`/quiz/${subjectCode}`);
     }
+
   return (
          <MotionCard 
             key={id} 
@@ -30,15 +33,23 @@ const SubCardPage = ({id, title, description, icon:Icon, color, index}) => {
           >
             <div className={`absolute inset-0 ${color} opacity-50 group-hover:opacity-70 transition-opacity`} />
             <CardHeader className="relative">
-              <div className="flex items-center gap-3">
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                  className={`p-2 rounded-lg ${color}`}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <motion.div
+                    whileHover={{ rotate: 360 }}
+                    transition={{ duration: 0.5 }}
+                    className={`p-2 rounded-lg ${color}`}
+                  >
+                    <Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
+                  </motion.div>
+                  <CardTitle className="text-xl">{title}</CardTitle>
+                </div>
+                <Badge 
+                  variant="secondary" 
+                  className="px-3 py-1 text-xs font-medium uppercase  hover:bg-primary/20 "
                 >
-                  <Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
-                </motion.div>
-                <CardTitle className="text-xl">{title}</CardTitle>
+                  {code}
+                </Badge>
               </div>
               <CardDescription className="mt-2 text-base">
                 {description}
@@ -51,10 +62,17 @@ const SubCardPage = ({id, title, description, icon:Icon, color, index}) => {
             </CardContent>
             <CardFooter className="flex justify-end relative">
               <Button 
-                onClick={() => handleStartQuiz(id)}
-                className="cursor-pointer"
+                onClick={() => handleStartQuiz(code)}
+                className="cursor-pointer group"
               >
                 Start Quiz
+                <motion.span 
+                  className="inline-block ml-2"
+                  initial={{ x: 0 }}
+                  whileHover={{ x: 3 }}
+                >
+                  →
+                </motion.span>
               </Button>
             </CardFooter>
           </MotionCard>
