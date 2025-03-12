@@ -4,7 +4,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full py-6 px-4 border-t mt-auto">
+    <footer className="w-full p-4 border-t mt-auto">
       <p className="text-sm text-center text-muted-foreground">
         © {currentYear} Quiz App. All rights reserved.
       </p>

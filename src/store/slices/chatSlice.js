@@ -1,43 +1,43 @@
-// // store/slices/chatSlice.js
-// import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-// const initialState = {
-//   messages: [
-//     {
-//       id: 1,
-//       sender: 'system',
-//       content: 'Welcome to the quiz! Click "Start Quiz" to begin.',
-//       timestamp: new Date().toISOString(),
-//     },
-//   ],
-// };
+const initialState = {
+  messages: [
+    {
+      id: 1,
+      sender: 'system',
+      content: 'Quiz Started',
+      timestamp: new Date().toISOString(),
+    },
+  ],
+};
 
-// export const chatSlice = createSlice({
-//   name: 'chat',
-//   initialState,
-//   reducers: {
-//     addMessage: (state, action) => {
-//       const { sender, content, type } = action.payload;
-//       state.messages.push({
-//         id: state.messages.length + 1,
-//         sender,
-//         content,
-//         type,
-//         timestamp: new Date().toISOString(),
-//       });
-//     },
-//     clearChat: (state) => {
-//       state.messages = [
-//         {
-//           id: 1,
-//           sender: 'system',
-//           content: 'Welcome to the quiz! Click "Start Quiz" to begin.',
-//           timestamp: new Date().toISOString(),
-//         },
-//       ];
-//     },
-//   },
-// });
+export const chatSlice = createSlice({
+  name: 'chat',
+  initialState,
+  reducers: {
+    setMessage: (state, action) => {
+      const { sender, content, type,qid } = action.payload;
+      state.messages.push({
+        id: state.messages.length + 1,
+        sender,
+        content,
+        type,
+        qid,
+        timestamp: new Date().toISOString(),
+      });
+    },
+    clearChat: (state) => {
+      state.messages = [
+        {
+          id: 1,
+          sender: 'system',
+          content: 'Quiz Started',
+          timestamp: new Date().toISOString(),
+        },
+      ];
+    },
+  },
+});
 
-// export const { addMessage, clearChat } = chatSlice.actions;
-// export default chatSlice.reducer;
+export const { setMessage, clearChat } = chatSlice.actions;
+export default chatSlice.reducer;

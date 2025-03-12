@@ -1,32 +1,57 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import useFetch from "@/hooks/useFetch";
-import { addMessage, setAnswer, submitQuiz } from "@/store/slices/quizSlice";
-import { Loader2 } from "lucide-react";
+import { setMessage } from "@/store/slices/chatSlice";
+import { setAnswer } from "@/store/slices/quizSlice";
+import { subjects } from "@/utils/constant";
+import quizHelper from "@/utils/helperfunctions";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
-import Loader from "./loader";
-import Validator from "./validator";
 import Error from "./error";
-import quizHelper from "@/utils/helperfunctions";
-import { subjects } from "@/utils/constant";
+import Loader from "./loader";
+import QuestionPage from "./QuestionPage";
+import SystemPage from "./SystemPage";
+import UserPage from "./UserPage";
+import Validator from "./validator";
 
 const QuizPage = () => {
+  // state
+  const [count, setCount] = useState(1);
+
+  //params
   const { subjectCode } = useParams();
 
-  const currentSubject=quizHelper.finderFunction(subjects, "code", subjectCode)?.title;
+  // find subjec name
+  const currentSubject = quizHelper.finderFunction(
+    subjects,
+    "code",
+    subjectCode
+  )?.title;
 
+  // redux dispatch
   const dispatch = useDispatch();
-  const { answers, messages, isSubmitted } = useSelector((state) => state.quiz);
+  const { messages } = useSelector((state) => state.chat);
+  const { answers, isSubmitted } = useSelector((state) => state.quiz);
 
+  // custom fetch
   const { loading, error, questions, isValidated } = useFetch(
     subjectCode,
     dispatch
   );
+
+  const currentQuestion = questions[count - 1];
+
+  useEffect(() => {
+    if (currentQuestion) {
+      dispatch(
+        setMessage({
+          sender: "question",
+          content: currentQuestion,
+          type: "text",
+        })
+      );
+    }
+  }, [currentQuestion, dispatch]);
 
   // Don't render anything until validation is complete
   if (!isValidated) {
@@ -39,120 +64,92 @@ const QuizPage = () => {
   }
 
   if (error) {
-    return (
-     <Error error={error} />
-    );
+    return <Error error={error} />;
   }
 
   const handleAnswerSelect = (questionId, answer) => {
     dispatch(setAnswer({ questionId, answer }));
+  };
+
+  // const handleSubmitQuiz = () => {
+  //   const score = questions.reduce((acc, q) => {
+  //     return acc + (answers[q.id] === q.correct ? 1 : 0);
+  //   }, 0);
+
+  //   dispatch(submitQuiz());
+   
+  // };
+
+  const handleSubmit=()=>{
     dispatch(
-      addMessage({
-        type: "user",
-        content: `Selected answer: ${answer}`,
+      setMessage({
+        sender: "user",
+        qid: currentQuestion.id,
+        content: `${answers[currentQuestion.id]}`,
         timestamp: new Date().toISOString(),
       })
     );
-  };
+  }
 
-  const handleSubmitQuiz = () => {
-    const score = questions.reduce((acc, q) => {
-      return acc + (answers[q.id] === q.correct ? 1 : 0);
-    }, 0);
-
-    dispatch(submitQuiz());
+  const handleNext = () => {
     dispatch(
-      addMessage({
-        type: "system",
-        content: `Quiz completed! Score: ${score}/${questions.length}`,
+      setMessage({
+        sender: "user",
+        qid: currentQuestion.id,
+        content: `${answers[currentQuestion.id]}`,
         timestamp: new Date().toISOString(),
-        score,
-        total: questions.length,
       })
     );
+    setCount((prev) => prev + 1);
   };
+
+
 
   return (
-    <div className="flex min-h-screen p-4 gap-4">
-      {/* Quiz Section (60%) */}
-      <div className="w-[60%] space-y-6">
-        <Card className="p-6">
-          <h2 className="text-2xl font-bold mb-6 capitalize">
-            {currentSubject} Quiz
-          </h2>
-          {questions.map((q) => (
-            <div key={q.id} className="mb-6 space-y-4">
-              <p className="font-medium">{q.question}</p>
-              <RadioGroup
-                onValueChange={(value) => handleAnswerSelect(q.id, value)}
-                value={answers[q.id] || ""}
-              >
-                {q.options.map((option) => (
-                  <div key={option} className="flex items-center space-x-2">
-                    <RadioGroupItem value={option} id={`${q.id}-${option}`} />
-                    <Label htmlFor={`${q.id}-${option}`}>{option}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          ))}
+    <div className="container h-[80vh] overflow-y-scroll relative p-8 mx-auto px-4 md:max-w-3/4">
+      <div className="w-full ">
+        <h2 className="text-3xl text-center font-bold mb-6 capitalize">
+          {currentSubject} Quiz
+        </h2>
+        {messages.map((message) => (
+          <Fragment key={message.id}>
+            {message.sender === "system" && <SystemPage message={message} />}
+            {message.sender === "question" && (
+              <QuestionPage
+                answers={answers}
+                count={count}
+                currentQuestion={message.content}
+                handleAnswerSelect={handleAnswerSelect}
+              />
+            )}
+            {message.sender === "user" && (
+              <UserPage answer={message.content} id={message.qid} />
+            )}
+          </Fragment>
+        ))}
+      </div>
+
+      {count === questions.length && (
+        <div className="w-1/2 fixed bottom-[10%] left-0 transform translate-x-1/2">
           <Button
-            onClick={handleSubmitQuiz}
-            disabled={
-              Object.keys(answers).length !== questions.length || isSubmitted
-            }
-            className="w-full mt-4"
+            onClick={handleSubmit}
+            className="w-full h-10 cursor-pointer mt-4"
           >
             Submit Quiz
           </Button>
-        </Card>
-      </div>
-
-      {/* Chat Section (40%) */}
-      <div className="w-[40%]">
-        <Card className="h-full">
-          <div className="p-4 border-b">
-            <h3 className="font-semibold">Chat Assistant</h3>
-          </div>
-          <ScrollArea className="h-[calc(100vh-200px)] p-4">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`mb-4 p-3 rounded-lg ${
-                  msg.type === "user" ? "bg-primary/10 ml-auto" : "bg-muted"
-                } max-w-[80%]`}
-              >
-                {msg.type === "system" && msg.score !== undefined ? (
-                  <div className="space-y-4">
-                    <p>{msg.content}</p>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <PieChart>
-                        <Pie
-                          data={[
-                            { name: "Correct", value: msg.score },
-                            { name: "Incorrect", value: msg.total - msg.score },
-                          ]}
-                          dataKey="value"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={80}
-                        >
-                          <Cell fill="#4CAF50" />
-                          <Cell fill="#f44336" />
-                        </Pie>
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                ) : (
-                  <p>{msg.content}</p>
-                )}
-              </div>
-            ))}
-          </ScrollArea>
-        </Card>
-      </div>
+        </div>
+      )}
+      {count !== questions.length  && (
+        <div className="w-1/2 fixed bottom-[10%] left-0 transform translate-x-1/2">
+          <Button
+            disabled={!answers[count]}
+            onClick={handleNext}
+            className="w-full h-10 cursor-pointer mt-4"
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
