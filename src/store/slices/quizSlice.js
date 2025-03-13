@@ -23,7 +23,11 @@ export const quizSlice = createSlice({
       state.loading = false
     },
     setQuestions: (state, action) => {
-      state.questions = action.payload
+      const question={
+        ...action.payload,
+        id:state.questions.length+1
+      }
+      state.questions.push(question)
     },
     startQuiz: (state) => {
       state.quizStarted = true;

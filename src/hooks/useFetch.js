@@ -17,7 +17,10 @@ const useFetch = (subjectId, dispatch) => {
     loading,
     error,
     questions,
-    isValidated
+    isValidated,
+    setIsValidated,
+    navigate,
+    revalidate: quizHelper
   };
 };
 
