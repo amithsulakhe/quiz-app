@@ -23,14 +23,7 @@ export const chatSlice = createSlice({
       });
     },
     clearChat: (state) => {
-      state.messages = [
-        {
-          id: 1,
-          sender: 'system',
-          content: 'Quiz Started',
-          timestamp: new Date().toISOString(),
-        },
-      ];
+      state.messages = initialState.messages
     },
   },
 });

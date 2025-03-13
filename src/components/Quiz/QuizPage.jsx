@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import useFetch from "@/hooks/useFetch";
-import { setMessage } from "@/store/slices/chatSlice";
-import { setAnswer } from "@/store/slices/quizSlice";
+import { clearChat, setMessage } from "@/store/slices/chatSlice";
+import { resetQuiz, setAnswer } from "@/store/slices/quizSlice";
 import { subjects } from "@/utils/constant";
 import quizHelper from "@/utils/helperfunctions";
 import { Fragment, useEffect, useRef, useState } from "react";
@@ -14,17 +14,17 @@ import SystemPage from "./SystemPage";
 import UserPage from "./UserPage";
 import Validator from "./validator";
 import { Loader2 } from "lucide-react";
-import {  PulseLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";
 import { useTheme } from "../theme-provider";
 import { cn } from "@/lib/utils";
+import WrapperComponent from "./WrapperComponent";
 
 const QuizPage = () => {
   // state
   const [count, setCount] = useState(1);
   const containerRef = useRef(null);
 
-    const {theme}=useTheme()
-  
+  const { theme } = useTheme();
 
   //params
   const { subjectCode } = useParams();
@@ -149,73 +149,85 @@ const QuizPage = () => {
   }
 
   return (
-    <div className="flex flex-col h-[80vh] relative">
-      <div
-        ref={containerRef}
-        className="container overflow-y-scroll p-8 mx-auto px-4 md:max-w-3/4 pb-24"
-      >
-        <div className="w-full">
-          <h2 className="text-3xl text-center font-bold mb-6 capitalize">
-            {currentSubject} Quiz
-          </h2>
+    <WrapperComponent>
+      <div className="flex flex-col h-[80vh] relative">
+        <div
+          ref={containerRef}
+          className="container overflow-y-scroll p-8 mx-auto px-4 md:max-w-3/4 pb-24"
+        >
+          <div className="w-full">
+            <h2 className="text-3xl text-center font-bold mb-6 capitalize">
+              {currentSubject} Quiz
+            </h2>
 
-          {groupedMessages.map((group, groupIndex) => (
-            <div key={`group-${groupIndex}`} className="mb-12 border-b pb-8">
-              {group.map((message) => (
-                <Fragment key={message.id}>
-                  {message.sender === "system" && (
-                    <SystemPage message={message} />
-                  )}
-                  {message.sender === "question" && (
-                    <QuestionPage
-                      answers={answers}
-                      count={message.question?.id || count}
-                      currentQuestion={message.question}
-                      handleAnswerSelect={handleAnswerSelect}
-                    />
-                  )}
-                  {message.sender === "user" && <UserPage message={message} />}
-                </Fragment>
-              ))}
-            </div>
-          ))}
+            {groupedMessages.map((group, groupIndex) => (
+              <div key={`group-${groupIndex}`} className="mb-12 border-b pb-8">
+                {group.map((message) => (
+                  <Fragment key={message.id}>
+                    {message.sender === "system" && (
+                      <SystemPage message={message} />
+                    )}
+                    {message.sender === "question" && (
+                      <QuestionPage
+                        answers={answers}
+                        count={message.question?.id || count}
+                        currentQuestion={message.question}
+                        handleAnswerSelect={handleAnswerSelect}
+                      />
+                    )}
+                    {message.sender === "user" && (
+                      <UserPage message={message} />
+                    )}
+                  </Fragment>
+                ))}
+              </div>
+            ))}
 
-          {loading && (
-            <div className="w-full md:w-1/2 m-auto ">
-              <PulseLoader size={10} />
-            </div>
+            {loading && (
+              <div className="w-full md:w-1/2 m-auto ">
+                <PulseLoader
+                  size={10}
+                  color={theme === "dark" ? "#ffffff" : "#000000"}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div
+          className={cn(
+            "fixed bottom-0 left-0 right-0 py-4  border-t shadow-lg",
+            theme === "light" ? "bg-white" : "bg-black"
           )}
+        >
+          <div className="container mx-auto px-4 md:max-w-3/4">
+            {count === 5 ? (
+              <Button
+                onClick={handleSubmitQuiz}
+                className="w-full h-10 cursor-pointer"
+              >
+                Submit Quiz
+              </Button>
+            ) : (
+              <Button
+                disabled={!answers[count] || loading}
+                onClick={handleNext}
+                className="w-full cursor-pointer py-5"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Submitting...
+                  </>
+                ) : (
+                  "Next"
+                )}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
-
-      <div className={cn("fixed bottom-0 left-0 right-0 py-4  border-t shadow-lg",theme==="light"?"bg-white":"bg-black")}>
-        <div className="container mx-auto px-4 md:max-w-3/4">
-          {count === 5 ? (
-            <Button
-              onClick={handleSubmitQuiz}
-              className="w-full h-10 cursor-pointer"
-            >
-              Submit Quiz
-            </Button>
-          ) : (
-            <Button
-              disabled={!answers[count] || loading}
-              onClick={handleNext}
-              className="w-full cursor-pointer py-5"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Submitting...
-                </>
-              ) : (
-                "Next"
-              )}
-            </Button>
-          )}
-        </div>
-      </div>
-    </div>
+    </WrapperComponent>
   );
 };
 

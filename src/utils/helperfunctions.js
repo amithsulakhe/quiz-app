@@ -55,6 +55,8 @@ class QuizHelper {
 
   async loadQuestions(subjectId, dispatch) {
     dispatch(setLoading(true));
+    dispatch(setError(null));
+
     try {
       const generatedQuestions = await this.generateQuizQuestions(subjectId);
       

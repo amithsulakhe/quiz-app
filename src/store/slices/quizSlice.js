@@ -20,7 +20,6 @@ export const quizSlice = createSlice({
     },
     setError: (state, action) => {
       state.error = action.payload
-      state.loading = false
     },
     setQuestions: (state, action) => {
       const question={
@@ -55,6 +54,7 @@ export const quizSlice = createSlice({
       state.answers = {};
       state.submitted = false;
       state.score = 0;
+      state.questions=[];
     },
   },
 })
