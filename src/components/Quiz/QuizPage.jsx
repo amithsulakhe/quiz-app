@@ -15,11 +15,16 @@ import UserPage from "./UserPage";
 import Validator from "./validator";
 import { Loader2 } from "lucide-react";
 import {  PulseLoader } from "react-spinners";
+import { useTheme } from "../theme-provider";
+import { cn } from "@/lib/utils";
 
 const QuizPage = () => {
   // state
   const [count, setCount] = useState(1);
   const containerRef = useRef(null);
+
+    const {theme}=useTheme()
+  
 
   //params
   const { subjectCode } = useParams();
@@ -183,7 +188,7 @@ const QuizPage = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white py-4 border-t shadow-lg">
+      <div className={cn("fixed bottom-0 left-0 right-0 py-4  border-t shadow-lg",theme==="light"?"bg-white":"bg-black")}>
         <div className="container mx-auto px-4 md:max-w-3/4">
           {count === 6 ? (
             <Button
@@ -196,7 +201,7 @@ const QuizPage = () => {
             <Button
               disabled={!answers[count] || loading}
               onClick={handleNext}
-              className="w-full h-10 cursor-pointer"
+              className="w-full cursor-pointer py-5"
             >
               {loading ? (
                 <>
