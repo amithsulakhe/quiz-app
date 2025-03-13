@@ -3,12 +3,12 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   answers: {},
   questions: [],
-  isSubmitted: false,
   loading: false,
   error: null,
   submitted: false,
   score: 0,
   quizStarted: false,
+  isFeedback:false
 }
 
 export const quizSlice = createSlice({
@@ -38,18 +38,9 @@ export const quizSlice = createSlice({
       const { questionId, answer } = action.payload;
       state.answers[questionId] = answer;
     },
-    submitQuiz: (state) => {
-      state.submitted = true;
-      // Calculate score
-      let correctAnswers = 0;
-      state.questions.forEach((question) => {
-        if (state.answers[question.id] === question.correctAnswer) {
-          correctAnswers++;
-        }
-      });
-      state.score = correctAnswers;
+    setIsFeedback:(state,action)=>{
+      state.isFeedback=action.payload
     },
-
     resetQuiz: (state) => {
       state.answers = {};
       state.submitted = false;
@@ -64,9 +55,9 @@ export const {
   setError, 
   setQuestions, 
   setAnswer, 
-  submitQuiz, 
   startQuiz,
-  resetQuiz 
+  resetQuiz ,
+  setIsFeedback
 } = quizSlice.actions
 
 export default quizSlice.reducer

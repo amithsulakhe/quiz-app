@@ -1,4 +1,10 @@
-import { setError, setLoading, setQuestions } from "@/store/slices/quizSlice";
+import { setMessage } from "@/store/slices/chatSlice";
+import {
+  setError,
+  setIsFeedback,
+  setLoading,
+  setQuestions,
+} from "@/store/slices/quizSlice";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 class QuizHelper {
@@ -31,17 +37,12 @@ class QuizHelper {
 
       const result = await this.model.generateContent(prompt);
       const response = await result.response.text();
-      
+
       // Remove possible markdown code blocks
-      const cleanResponse = response.replace(/```(json)?\n?|\n?```/g, '');
+      const cleanResponse = response.replace(/```(json)?\n?|\n?```/g, "");
 
       try {
         const parsedQuestions = JSON.parse(cleanResponse);
-          
-          console.log(parsedQuestions);
-          
-        console.log(parsedQuestions);
-        
         return parsedQuestions?.questions || [];
       } catch (parseError) {
         console.error("Error parsing questions:", parseError, "cleanResponse");
@@ -59,31 +60,39 @@ class QuizHelper {
 
     try {
       const generatedQuestions = await this.generateQuizQuestions(subjectId);
-      
+
       if (Array.isArray(generatedQuestions) && generatedQuestions.length > 0) {
         dispatch(setQuestions(generatedQuestions[0]));
       } else {
         dispatch(setError("No questions generated. Please try again."));
       }
     } catch (err) {
-      dispatch(setError(`Failed to load quiz questions. Please try again. ${err.message}`));
-      throw err
+      dispatch(
+        setError(
+          `Failed to load quiz questions. Please try again. ${err.message}`
+        )
+      );
+      throw err;
     } finally {
       dispatch(setLoading(false));
     }
   }
 
   finderFunction(arr, key, value) {
-    return Array.isArray(arr) ? arr.find(ele => ele[key] === value) : false;
+    return Array.isArray(arr) ? arr.find((ele) => ele[key] === value) : false;
   }
 
-  async validateAndLoad(subjects, subjectCode, navigate, setIsValidated, dispatch) {
-    console.log(!this.finderFunction(subjects, "code", subjectCode));
-    
+  async validateAndLoad(
+    subjects,
+    subjectCode,
+    navigate,
+    setIsValidated,
+    dispatch
+  ) {
     if (!this.finderFunction(subjects, "code", subjectCode)) {
-      navigate("/", { 
+      navigate("/", {
         replace: true,
-        state: { error: "Invalid subject selected" } 
+        state: { error: "Invalid subject selected" },
       });
       return;
     }
@@ -91,12 +100,57 @@ class QuizHelper {
     await this.loadQuestions(subjectCode, dispatch);
   }
 
+  async generateFeedBack(question, answers, isSubmitted, dispatch) {
+    dispatch(setLoading(true));
+    dispatch(setError(null));
+    dispatch(setIsFeedback(false));
 
-  
+    const prompt = `
+    Analyze the candidate's responses and generate a structured review in HTML format.  
+    
+    Use the following structure enclosed within a single <div>:  
+    - Use <h3> for the title.  
+    - Strengths in <p><strong>✔ Strengths:</strong>...</p>.  
+    - Mistakes in <p><strong>❌ Mistakes:</strong>...</p>.  
+    - Misconceptions in <p><strong>⚠ Misconceptions:</strong>...</p>.  
+    - Areas for improvement in <p><strong>📌 Areas for Improvement:</strong>...</p>.  
+    - Summary in <p><strong>📊 Summary:</strong>...</p>.  
+    
+    Ensure the response is **brief (max 6 lines)** and highlights key points with <strong>.  
+    
+    Candidate's Question & Answer Data:  
+    ${JSON.stringify(question, null, 2)}  
+    ${JSON.stringify(answers, null, 2)}
+    `;
+
+    try {
+      const result = await this.model.generateContent(prompt);
+      const response = await result.response.text();
+      const cleanResponse = response.replace(/```(html|json)?\n?|```/g, "");
+      dispatch(
+        setMessage({
+          sender: "system",
+          content: cleanResponse,
+          type: "ai",
+          timestamp: new Date().toISOString(),
+        })
+      );
+      dispatch(setIsFeedback(true));
+    } catch (error) {
+      dispatch(
+        setError(
+          `Failed to load quiz questions. Please try again. ${err.message}`
+        )
+      );
+
+      throw error;
+    } finally {
+      dispatch(setLoading(false));
+      isSubmitted.onFalse();
+    }
+  }
 }
 
-// Create a singleton instance
 const quizHelper = new QuizHelper();
 
-// Export the instance
 export default quizHelper;

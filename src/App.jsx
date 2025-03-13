@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayot from "./RootLayot";
 import HomePage from "./components/Home/HomePage";
-import QuizPage from "./components/Quiz/QuizPage";
+import QuizChat from "./components/Chat/QuizChat";
 import ErrorPage from "./components/error-page";
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
         },
         {
           path:"/quiz/:subjectCode",
-          element:<QuizPage />
+          element:<QuizChat />
         }
       ]
     }

@@ -7,24 +7,29 @@ import quizHelper from "@/utils/helperfunctions";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Error from "./error";
-import Loader from "./loader";
-import QuestionPage from "./QuestionPage";
-import SystemPage from "./SystemPage";
-import UserPage from "./UserPage";
-import Validator from "./validator";
+import Error from "../Quiz/error";
+import Loader from "../Quiz/loader";
+import QuestionChat from "./QuestionChat";
+import SystemChat from "./SystemChat";
+import UserChat from "./UserChat";
+import Validator from "../Quiz/validator";
 import { Loader2 } from "lucide-react";
-import { PulseLoader } from "react-spinners";
+import { PacmanLoader, PulseLoader } from "react-spinners";
 import { useTheme } from "../theme-provider";
 import { cn } from "@/lib/utils";
-import WrapperComponent from "./WrapperComponent";
+import WrapperComponent from "../Quiz/WrapperComponent";
+import useBoolean from "@/hooks/useBoolean";
+import CustomBarChart from "../Charts/BarChart";
+import CustomPieChart from "../Charts/PieChart";
+import QuizResults from "../Quiz/quiz-results";
 
-const QuizPage = () => {
+const QuizChat = () => {
   // state
   const [count, setCount] = useState(1);
   const containerRef = useRef(null);
 
   const { theme } = useTheme();
+  const isSubmitted = useBoolean();
 
   //params
   const { subjectCode } = useParams();
@@ -39,7 +44,7 @@ const QuizPage = () => {
   // redux dispatch and redux selector
   const dispatch = useDispatch();
   const { messages } = useSelector((state) => state.chat);
-  const { answers, isSubmitted } = useSelector((state) => state.quiz);
+  const { answers, isFeedback } = useSelector((state) => state.quiz);
 
   // custom fetch
   const {
@@ -53,32 +58,6 @@ const QuizPage = () => {
   } = useFetch(subjectCode, dispatch);
 
   const currentQuestion = questions[count - 1];
-
-  // to render next question
-  useEffect(() => {
-    if (currentQuestion) {
-      dispatch(
-        setMessage({
-          sender: "question",
-          question: currentQuestion,
-          type: "text",
-        })
-      );
-    }
-  }, [currentQuestion, dispatch]);
-
-  useEffect(() => {
-    if (containerRef.current && count !== 1) {
-      containerRef.current.scrollTo({
-        // scroll upto bottom but leaves 200 px gap
-        top:
-          containerRef.current.scrollHeight -
-          containerRef.current.clientHeight -
-          50,
-        behavior: "smooth",
-      });
-    }
-  }, [count, messages]);
 
   // change handler to select answer
   const handleAnswerSelect = (questionId, answer) => {
@@ -106,15 +85,61 @@ const QuizPage = () => {
 
   // click handler to submit quiz
   const handleSubmitQuiz = () => {
-    dispatch(
-      setMessage({
-        sender: "user",
-        qid: currentQuestion.id,
-        answer: `${answers[currentQuestion.id]}`,
-      })
-    );
+    if (!isSubmitted.value) {
+    setCount((prev) => prev + 1);
+      dispatch(
+        setMessage({
+          sender: "user",
+          qid: currentQuestion.id,
+          answer: `${answers[currentQuestion.id]}`,
+        })
+      );
+      dispatch(
+        setMessage({
+          sender: "system",
+          content: "Congratulations on completing your quiz! 🎉",
+          timestamp: new Date().toISOString(),
+        })
+      );
+      isSubmitted.onTrue();
+    }
   };
 
+  // to render next question
+  useEffect(() => {
+    if (currentQuestion) {
+      dispatch(
+        setMessage({
+          sender: "question",
+          question: currentQuestion,
+          type: "text",
+        })
+      );
+    }
+  }, [currentQuestion, dispatch]);
+
+  
+  useEffect(() => {
+    if (containerRef.current && count !== 1 && !isFeedback) {
+      containerRef.current.scrollTo({
+        // scroll upto bottom but leaves 200 px gap
+        top:
+          containerRef.current.scrollHeight -
+          containerRef.current.clientHeight -
+          50,
+        behavior: "smooth",
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count, messages]);
+
+  // feedback
+  useEffect(() => {
+    if (isSubmitted.value && Object.keys(answers).length === 5) {
+      quizHelper.generateFeedBack(questions, answers, isSubmitted, dispatch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, isSubmitted.value]);
 
   // Group messages by question to add separation
   const groupedMessages = [];
@@ -149,6 +174,7 @@ const QuizPage = () => {
     return <Error error={error} />;
   }
 
+  
 
   return (
     <WrapperComponent>
@@ -167,30 +193,49 @@ const QuizPage = () => {
                 {group.map((message) => (
                   <Fragment key={message.id}>
                     {message.sender === "system" && (
-                      <SystemPage message={message} />
+                      <SystemChat message={message} />
                     )}
                     {message.sender === "question" && (
-                      <QuestionPage
+                      <QuestionChat
                         answers={answers}
-                        count={ count}
+                        count={count}
                         currentQuestion={message.question}
                         handleAnswerSelect={handleAnswerSelect}
                       />
                     )}
                     {message.sender === "user" && (
-                      <UserPage message={message} />
+                      <UserChat message={message} />
                     )}
                   </Fragment>
                 ))}
               </div>
             ))}
-
-            {loading && (
+            {loading && count!==6  &&(
               <div className="w-full md:w-1/2 m-auto ">
                 <PulseLoader
                   size={10}
                   color={theme === "dark" ? "#ffffff" : "#000000"}
                 />
+              </div>
+            )}
+
+            {loading && isSubmitted.value && (
+              <div className="flex items-center mb-8 gap-8">
+                <PacmanLoader
+                  size={12}
+                  color={theme === "dark" ? "#ffffff" : "#000000"}
+                />
+                <h1 className="font-bold text-xl">Validating Results</h1>
+              </div>
+            )}
+
+            {isFeedback && (
+              <div className="flex flex-col gap-8">
+                <QuizResults />
+                <div className="w-full md:w-[80%] m-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <CustomBarChart />
+                  <CustomPieChart />
+                </div>
               </div>
             )}
           </div>
@@ -205,10 +250,11 @@ const QuizPage = () => {
           <div className="container mx-auto px-4 md:max-w-3/4">
             {count === 5 ? (
               <Button
+                disabled={isSubmitted.value}
                 onClick={handleSubmitQuiz}
                 className="w-full h-10 cursor-pointer"
               >
-                Submit Quiz
+                {isSubmitted.value ? "Submitted" : "Submit Quiz"}
               </Button>
             ) : (
               <Button
@@ -233,4 +279,4 @@ const QuizPage = () => {
   );
 };
 
-export default QuizPage;
+export default QuizChat;

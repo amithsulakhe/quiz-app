@@ -3,11 +3,8 @@ import { Label } from "../ui/label";
 import { FadeUp, SlideLeft } from "../Animations/animation";
 
 const QuestionPage = ({currentQuestion,answers,handleAnswerSelect,count}) => {
-  console.log('====================================');
-  console.log(answers[currentQuestion.id]);
-  console.log(currentQuestion.id);
-  console.log(count);
-  console.log('====================================');
+console.log(count);
+
   return (
     <div className="mb-6 w-full md:w-1/2 m-auto space-y-4">
     <FadeUp className="font-medium">
@@ -22,7 +19,7 @@ const QuestionPage = ({currentQuestion,answers,handleAnswerSelect,count}) => {
         duration={1}
         x={-500}
         className="flex items-center space-x-2">
-          <RadioGroupItem value={option} disabled={answers[currentQuestion.id] && count!==currentQuestion.id} id={`${currentQuestion.id}-${option}`} />
+          <RadioGroupItem value={option} disabled={answers[currentQuestion.id] && count!==currentQuestion.id } id={`${currentQuestion.id}-${option}`} />
           <Label htmlFor={`${currentQuestion.id}-${option}`}>{option}</Label>
         </SlideLeft>
       ))}

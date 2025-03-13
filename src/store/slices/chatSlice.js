@@ -5,7 +5,7 @@ const initialState = {
     {
       id: 1,
       sender: 'system',
-      content: 'Quiz Started',
+      content: '😀Quiz Started',
       timestamp: new Date().toISOString(),
     },
   ],

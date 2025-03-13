@@ -1,6 +1,6 @@
 import { clearChat } from '@/store/slices/chatSlice';
 import { resetQuiz } from '@/store/slices/quizSlice';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +9,7 @@ const WrapperComponent = ({children}) => {
     const dispatch=useDispatch()
 
 
+    // handling event for back and reload
       useEffect(() => {
         const handleBeforeUnload = (event) => {
           event.preventDefault();
