@@ -3,6 +3,11 @@ import { Label } from "../ui/label";
 import { FadeUp, SlideLeft } from "../Animations/animation";
 
 const QuestionPage = ({currentQuestion,answers,handleAnswerSelect,count}) => {
+  console.log('====================================');
+  console.log(answers[currentQuestion.id]);
+  console.log(currentQuestion.id);
+  console.log(count);
+  console.log('====================================');
   return (
     <div className="mb-6 w-full md:w-1/2 m-auto space-y-4">
     <FadeUp className="font-medium">

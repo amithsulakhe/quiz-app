@@ -115,6 +115,7 @@ const QuizPage = () => {
     );
   };
 
+
   // Group messages by question to add separation
   const groupedMessages = [];
   let currentGroup = [];
@@ -148,6 +149,7 @@ const QuizPage = () => {
     return <Error error={error} />;
   }
 
+
   return (
     <WrapperComponent>
       <div className="flex flex-col h-[80vh] relative">
@@ -170,7 +172,7 @@ const QuizPage = () => {
                     {message.sender === "question" && (
                       <QuestionPage
                         answers={answers}
-                        count={message.question?.id || count}
+                        count={ count}
                         currentQuestion={message.question}
                         handleAnswerSelect={handleAnswerSelect}
                       />
