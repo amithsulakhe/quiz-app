@@ -4,7 +4,7 @@ import { setMessage } from "@/store/slices/chatSlice";
 import { setAnswer } from "@/store/slices/quizSlice";
 import { subjects } from "@/utils/constant";
 import quizHelper from "@/utils/helperfunctions";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Error from "./error";
@@ -17,11 +17,12 @@ import Validator from "./validator";
 const QuizPage = () => {
   // state
   const [count, setCount] = useState(1);
+  const containerRef = useRef(null); 
 
   //params
   const { subjectCode } = useParams();
 
-  // find subjec name
+  // find subject name
   const currentSubject = quizHelper.finderFunction(
     subjects,
     "code",
@@ -46,12 +47,21 @@ const QuizPage = () => {
       dispatch(
         setMessage({
           sender: "question",
-          content: currentQuestion,
+          question: currentQuestion,
           type: "text",
         })
       );
     }
   }, [currentQuestion, dispatch]);
+
+  useEffect(() => {
+    if (containerRef.current && count!==1) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight - containerRef.current.clientHeight - 50,
+        behavior: "smooth"
+      });
+    }
+  }, [count, messages]); 
 
   // Don't render anything until validation is complete
   if (!isValidated) {
@@ -71,22 +81,12 @@ const QuizPage = () => {
     dispatch(setAnswer({ questionId, answer }));
   };
 
-  // const handleSubmitQuiz = () => {
-  //   const score = questions.reduce((acc, q) => {
-  //     return acc + (answers[q.id] === q.correct ? 1 : 0);
-  //   }, 0);
-
-  //   dispatch(submitQuiz());
-   
-  // };
-
-  const handleSubmit=()=>{
+  const handleSubmit = () => {
     dispatch(
       setMessage({
         sender: "user",
         qid: currentQuestion.id,
-        content: `${answers[currentQuestion.id]}`,
-        timestamp: new Date().toISOString(),
+        answer: `${answers[currentQuestion.id]}`,
       })
     );
   }
@@ -96,60 +96,85 @@ const QuizPage = () => {
       setMessage({
         sender: "user",
         qid: currentQuestion.id,
-        content: `${answers[currentQuestion.id]}`,
-        timestamp: new Date().toISOString(),
+        answer: `${answers[currentQuestion.id]}`,
       })
     );
     setCount((prev) => prev + 1);
   };
 
-
+  // Group messages by question to add separation
+  const groupedMessages = [];
+  let currentGroup = [];
+  
+  messages.forEach((message, index) => {
+    if (message.sender === "question" && index > 0) {
+      // When we hit a new question, save the previous group and start a new one
+      groupedMessages.push([...currentGroup]);
+      currentGroup = [message];
+    } else {
+      currentGroup.push(message);
+    }
+  });
+  
+  // Add the last group
+  if (currentGroup.length > 0) {
+    groupedMessages.push(currentGroup);
+  }
 
   return (
-    <div className="container h-[80vh] overflow-y-scroll relative p-8 mx-auto px-4 md:max-w-3/4">
-      <div className="w-full ">
-        <h2 className="text-3xl text-center font-bold mb-6 capitalize">
-          {currentSubject} Quiz
-        </h2>
-        {messages.map((message) => (
-          <Fragment key={message.id}>
-            {message.sender === "system" && <SystemPage message={message} />}
-            {message.sender === "question" && (
-              <QuestionPage
-                answers={answers}
-                count={count}
-                currentQuestion={message.content}
-                handleAnswerSelect={handleAnswerSelect}
-              />
-            )}
-            {message.sender === "user" && (
-              <UserPage answer={message.content} id={message.qid} />
-            )}
-          </Fragment>
-        ))}
+    <div className="flex flex-col h-[80vh] relative">
+      <div 
+        ref={containerRef} 
+        className="container overflow-y-scroll p-8 mx-auto px-4 md:max-w-3/4 pb-24"
+      >
+        <div className="w-full">
+          <h2 className="text-3xl text-center font-bold mb-6 capitalize">
+            {currentSubject} Quiz
+          </h2>
+          
+          {groupedMessages.map((group, groupIndex) => (
+            <div key={`group-${groupIndex}`} className="mb-12 border-b pb-8">
+              {group.map((message) => (
+                <Fragment key={message.id}>
+                  {message.sender === "system" && <SystemPage message={message} />}
+                  {message.sender === "question" && (
+                    <QuestionPage
+                      answers={answers}
+                      count={message.question?.id || count}
+                      currentQuestion={message.question}
+                      handleAnswerSelect={handleAnswerSelect}
+                    />
+                  )}
+                  {message.sender === "user" && (
+                    <UserPage message={message}/>
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
-      {count === questions.length && (
-        <div className="w-1/2 fixed bottom-[10%] left-0 transform translate-x-1/2">
-          <Button
-            onClick={handleSubmit}
-            className="w-full h-10 cursor-pointer mt-4"
-          >
-            Submit Quiz
-          </Button>
+      <div className="fixed bottom-0 left-0 right-0 bg-white py-4 border-t shadow-lg">
+        <div className="container mx-auto px-4 md:max-w-3/4">
+          {count === questions.length ? (
+            <Button
+              onClick={handleSubmit}
+              className="w-full h-10 cursor-pointer"
+            >
+              Submit Quiz
+            </Button>
+          ) : (
+            <Button
+              disabled={!answers[count]}
+              onClick={handleNext}
+              className="w-full h-10 cursor-pointer"
+            >
+              Next
+            </Button>
+          )}
         </div>
-      )}
-      {count !== questions.length  && (
-        <div className="w-1/2 fixed bottom-[10%] left-0 transform translate-x-1/2">
-          <Button
-            disabled={!answers[count]}
-            onClick={handleNext}
-            className="w-full h-10 cursor-pointer mt-4"
-          >
-            Next
-          </Button>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

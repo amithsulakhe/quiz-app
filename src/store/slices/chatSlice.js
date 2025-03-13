@@ -16,13 +16,9 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     setMessage: (state, action) => {
-      const { sender, content, type,qid } = action.payload;
       state.messages.push({
         id: state.messages.length + 1,
-        sender,
-        content,
-        type,
-        qid,
+        ...action.payload,
         timestamp: new Date().toISOString(),
       });
     },

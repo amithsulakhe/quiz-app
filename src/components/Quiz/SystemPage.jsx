@@ -1,9 +1,9 @@
-import React from "react";
-import { Avatar, AvatarFallback } from "../ui/avatar";
+import { FadeIn } from "../Animations/animation";
 
 const SystemPage = ({message}) => {
   return (
-    <div className="flex flex-col gap-1 mb-4 shadow-md rounded-lg p-3 bg-gray-100 max-w-96 m-auto">
+    <FadeIn
+     className="flex flex-col gap-1 shadow-md rounded-lg p-3 bg-gray-100 max-w-96 m-auto  mb-4 ">
         <p className="text-lg">Quiz Started</p>
         <div className="text-right text-muted-foreground text-sm">
         {new Date(message.timestamp).toLocaleTimeString([], { 
@@ -11,7 +11,7 @@ const SystemPage = ({message}) => {
           minute: '2-digit' 
         })}
       </div>
-    </div>
+    </FadeIn>
   );
 };
 
