@@ -190,7 +190,7 @@ const QuizPage = () => {
 
       <div className={cn("fixed bottom-0 left-0 right-0 py-4  border-t shadow-lg",theme==="light"?"bg-white":"bg-black")}>
         <div className="container mx-auto px-4 md:max-w-3/4">
-          {count === 6 ? (
+          {count === 5 ? (
             <Button
               onClick={handleSubmitQuiz}
               className="w-full h-10 cursor-pointer"
