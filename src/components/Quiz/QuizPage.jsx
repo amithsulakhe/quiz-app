@@ -176,7 +176,7 @@ const QuizPage = () => {
           ))}
 
           {loading && (
-            <div className="w-1/2 m-auto">
+            <div className="w-full md:w-1/2 m-auto ">
               <PulseLoader size={10} />
             </div>
           )}
