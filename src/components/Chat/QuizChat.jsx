@@ -163,25 +163,37 @@ const QuizChat = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, isSubmitted.value]);
 
-  // Group messages by question to add separation
-  const groupedMessages = [];
-  let currentGroup = [];
-
-  messages.forEach((message, index) => {
-    if (message.sender === "question" && index > 0) {
-      // When we hit a new question, save the previous group and start a new one
-      groupedMessages.push([...currentGroup]);
-      currentGroup = [message];
-    } else {
-      currentGroup.push(message);
-    }
-  });
-
-  // Add the last group
-  if (currentGroup.length > 0) {
-    groupedMessages.push(currentGroup);
-  }
   
+  // Group messages by question to add separation
+const groupedMessages = [];
+let currentGroup = [];
+
+messages.forEach((message) => {
+  if (message.sender === "question" && currentGroup.length) {
+    groupedMessages.push(currentGroup);
+    currentGroup = [];
+  }
+  currentGroup.push(message);
+});
+
+// last message
+if (currentGroup.length) groupedMessages.push(currentGroup);
+
+
+  console.log('====================================');
+  console.log("message",messages);
+  console.log('====================================');
+
+  
+  console.log('====================================');
+  console.log("groupedMessages",groupedMessages);
+  console.log('====================================');
+
+
+    
+  console.log('====================================');
+  console.log("currentGroup",currentGroup);
+  console.log('====================================');
 
   // Don't render anything until validation is complete
   if (!isValidated) {
