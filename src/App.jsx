@@ -1,8 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayot from "./RootLayot";
-import HomePage from "./components/Home/HomePage";
-import QuizChat from "./components/Chat/QuizChat";
 import ErrorPage from "./components/error-page";
+import { lazy, Suspense } from "react";
+import Loader from "./components/Quiz/loader";
+
+// lazy loading and code splitting
+const HomePage=lazy(()=>import("./components/Home/HomePage"))
+const QuizChat=lazy(()=>import("./components/Chat/QuizChat"))
+
 
 const App = () => {
 
@@ -14,11 +19,11 @@ const App = () => {
       children:[
         {
           path:"/",
-          element:<HomePage />
+          element:<Suspense fallback={<Loader/>}><HomePage /></Suspense>
         },
         {
           path:"/quiz/:subjectCode",
-          element:<QuizChat />
+          element:<Suspense fallback={<Loader/>}><QuizChat /></Suspense>
         }
       ]
     }
