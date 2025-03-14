@@ -9,7 +9,7 @@ import OfflineOnlineProvider from "./offline-online-provider";
 import { Toaster } from "./components/ui/sonner";
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
+  <StrictMode>
     <OfflineOnlineProvider>
       <ThemeProvider defaultTheme="dark" storageKey="quiz-ui-theme">
         <Provider store={store}>
@@ -22,5 +22,5 @@ createRoot(document.getElementById("root")).render(
         </Provider>
       </ThemeProvider>
     </OfflineOnlineProvider>
-  // </StrictMode>
+   </StrictMode>
 );
