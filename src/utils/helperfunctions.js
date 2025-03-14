@@ -149,6 +149,36 @@ class QuizHelper {
       isSubmitted.onFalse();
     }
   }
+
+  generateChartData(questions, answers) {
+    const correctAnsSum = questions.reduce((acc, question) => {
+      if (answers[question.id] === question.correct) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
+    const incorrectAnsSum = questions.length - correctAnsSum;
+    const barData = [
+      { name: "Correct", value: correctAnsSum, fill: "#41644A" },
+      { name: "Incorrect", value: incorrectAnsSum, fill: "#B82132" },
+    ];
+    const pieData = [
+      {
+        name: "Correct",
+        value: correctAnsSum,
+        percentage: `${correctAnsSum * 10}`,
+      },
+      {
+        name: "Incorrect",
+        value: incorrectAnsSum,
+        percentage: `${incorrectAnsSum * 10}`,
+      },
+    ];
+    return {
+      barData,
+      pieData,
+    };
+  }
 }
 
 const quizHelper = new QuizHelper();

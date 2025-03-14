@@ -20,6 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FadeUp, SlideRight } from "../Animations/animation";
+import quizHelper from "@/utils/helperfunctions";
 
 // Custom tooltip to display percentage
 const CustomTooltip = ({ active, payload }) => {
@@ -34,12 +35,8 @@ const CustomTooltip = ({ active, payload }) => {
   }
   return null;
 };
-const CustomPieChart = () => {
-  const pieData = [
-    { name: "Correct", value: 2, percentage: "20" },
-    { name: "Incorrect", value: 3, percentage: "30" },
-  ];
-
+const CustomPieChart = ({questions,answers}) => {
+  const {pieData}=quizHelper.generateChartData(questions,answers)
   const COLORS = ["#41644A", "#B82132"];
 
   return (

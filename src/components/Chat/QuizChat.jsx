@@ -181,6 +181,7 @@ const QuizChat = () => {
   if (currentGroup.length > 0) {
     groupedMessages.push(currentGroup);
   }
+  
 
   // Don't render anything until validation is complete
   if (!isValidated) {
@@ -263,8 +264,8 @@ const QuizChat = () => {
               ) : (
                 <QuizAnalysis isQuizResults={isQuizResults}>
                   <div className="w-full md:w-[80%] m-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <CustomBarChart />
-                    <CustomPieChart />
+                    <CustomBarChart  questions={questions} answers={answers}/>
+                    <CustomPieChart questions={questions} answers={answers} />
                   </div>
                 </QuizAnalysis>
               ))}

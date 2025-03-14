@@ -19,13 +19,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FadeUp, SlideLeft } from "../Animations/animation";
+import quizHelper from "@/utils/helperfunctions";
 
-const CustomBarChart = () => {
-  const data = [
-    { name: "Correct", value: 3, fill: "#41644A" },
-    { name: "Incorrect", value: 2, fill: "#B82132" },
-  ];
-
+const CustomBarChart = ({questions,answers}) => {
+  const {barData}=quizHelper.generateChartData(questions,answers)
+  console.log(barData);
+  
   return (
     <SlideLeft x={-200} duration={2} delay={1}>
     <Card>
@@ -39,7 +38,7 @@ const CustomBarChart = () => {
           height={400}
           className="border-2 border-dotted rounded-md py-4 "
         >
-          <BarChart data={data} barSize={50}>
+          <BarChart data={barData} barSize={50}>
             <XAxis
               dataKey="name"
               stroke="#888888"
@@ -81,7 +80,7 @@ const CustomBarChart = () => {
             />
            
             <Bar dataKey="value"  radius={8}>
-              {data.map((entry, index) => (
+              {barData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}
             </Bar>
