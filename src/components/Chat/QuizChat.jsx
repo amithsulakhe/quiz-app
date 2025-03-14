@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import useFetch from "@/hooks/useFetch";
 import { clearChat, setMessage } from "@/store/slices/chatSlice";
-import { resetQuiz, setAnswer } from "@/store/slices/quizSlice";
+import { resetQuiz, setAnswer, setIsFeedback } from "@/store/slices/quizSlice";
 import { subjects } from "@/utils/constant";
 import quizHelper from "@/utils/helperfunctions";
 import { Fragment, useEffect, useRef, useState } from "react";
@@ -22,6 +22,7 @@ import useBoolean from "@/hooks/useBoolean";
 import CustomBarChart from "../Charts/BarChart";
 import CustomPieChart from "../Charts/PieChart";
 import QuizResults from "../Quiz/quiz-results";
+import QuizAnalysis from "../Quiz/quiz-analysis";
 
 const QuizChat = () => {
   // state
@@ -30,6 +31,7 @@ const QuizChat = () => {
 
   const { theme } = useTheme();
   const isSubmitted = useBoolean();
+  const isQuizResults = useBoolean();
 
   //params
   const { subjectCode } = useParams();
@@ -44,7 +46,9 @@ const QuizChat = () => {
   // redux dispatch and redux selector
   const dispatch = useDispatch();
   const { messages } = useSelector((state) => state.chat);
-  const { answers, isFeedback } = useSelector((state) => state.quiz);
+  const { answers, isFeedback, totalQuestions } = useSelector(
+    (state) => state.quiz
+  );
 
   // custom fetch
   const {
@@ -86,7 +90,7 @@ const QuizChat = () => {
   // click handler to submit quiz
   const handleSubmitQuiz = () => {
     if (!isSubmitted.value) {
-    setCount((prev) => prev + 1);
+      setCount((prev) => prev + 1);
       dispatch(
         setMessage({
           sender: "user",
@@ -105,6 +109,24 @@ const QuizChat = () => {
     }
   };
 
+  const handleReset = async () => {
+    try {
+      setCount(1);
+      dispatch(resetQuiz());
+      dispatch(setIsFeedback(false));
+      dispatch(clearChat());
+      await revalidate.validateAndLoad(
+        subjects,
+        subjectCode,
+        navigate,
+        setIsValidated,
+        dispatch
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   // to render next question
   useEffect(() => {
     if (currentQuestion) {
@@ -118,24 +140,23 @@ const QuizChat = () => {
     }
   }, [currentQuestion, dispatch]);
 
-  
   useEffect(() => {
-    if (containerRef.current && count !== 1 && !isFeedback) {
+    if (containerRef.current && count !== 1) {
       containerRef.current.scrollTo({
         // scroll upto bottom but leaves 200 px gap
         top:
           containerRef.current.scrollHeight -
           containerRef.current.clientHeight -
-          50,
+          (isFeedback ? 200 : 50),
         behavior: "smooth",
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [count, messages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [count, messages, isQuizResults.value]);
 
   // feedback
   useEffect(() => {
-    if (isSubmitted.value && Object.keys(answers).length === 5) {
+    if (isSubmitted.value && Object.keys(answers).length === totalQuestions) {
       quizHelper.generateFeedBack(questions, answers, isSubmitted, dispatch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,8 +195,6 @@ const QuizChat = () => {
     return <Error error={error} />;
   }
 
-  
-
   return (
     <WrapperComponent>
       <div className="flex flex-col h-[80vh] relative">
@@ -210,7 +229,9 @@ const QuizChat = () => {
                 ))}
               </div>
             ))}
-            {loading && count!==6  &&(
+
+            {/* loading question */}
+            {loading && count !== totalQuestions + 1 && (
               <div className="w-full md:w-1/2 m-auto ">
                 <PulseLoader
                   size={10}
@@ -219,6 +240,7 @@ const QuizChat = () => {
               </div>
             )}
 
+            {/* results loading */}
             {loading && isSubmitted.value && (
               <div className="flex items-center mb-8 gap-8">
                 <PacmanLoader
@@ -229,15 +251,20 @@ const QuizChat = () => {
               </div>
             )}
 
-            {isFeedback && (
-              <div className="flex flex-col gap-8">
-                <QuizResults />
-                <div className="w-full md:w-[80%] m-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <CustomBarChart />
-                  <CustomPieChart />
-                </div>
-              </div>
-            )}
+            {/* quiz results feedback */}
+            {isFeedback &&
+              (isQuizResults.value ? (
+                <QuizAnalysis isQuizResults={isQuizResults}>
+                  <QuizResults />
+                </QuizAnalysis>
+              ) : (
+                <QuizAnalysis isQuizResults={isQuizResults}>
+                  <div className="w-full md:w-[80%] m-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CustomBarChart />
+                    <CustomPieChart />
+                  </div>
+                </QuizAnalysis>
+              ))}
           </div>
         </div>
 
@@ -248,7 +275,7 @@ const QuizChat = () => {
           )}
         >
           <div className="container mx-auto px-4 md:max-w-3/4">
-            {count === 5 ? (
+            {count === totalQuestions ? (
               <Button
                 disabled={isSubmitted.value}
                 onClick={handleSubmitQuiz}
@@ -258,15 +285,17 @@ const QuizChat = () => {
               </Button>
             ) : (
               <Button
-                disabled={!answers[count] || loading}
-                onClick={handleNext}
+                disabled={(!answers[count] || loading) && !isFeedback}
+                onClick={isFeedback ? () => handleReset() : () => handleNext()}
                 className="w-full cursor-pointer py-5"
               >
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    Submitting...
+                    loading Question...
                   </>
+                ) : isFeedback ? (
+                  "Try again"
                 ) : (
                   "Next"
                 )}

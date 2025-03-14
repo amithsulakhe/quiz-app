@@ -3,21 +3,29 @@ import { cn } from "@/lib/utils";
 import { CircleCheckBig, CircleX, Terminal } from "lucide-react";
 
 const QuizAnswer = ({ question, correct, id, answers }) => {
-  const isCorrect = Object.keys(answers).find((id) => answers[id] === correct);
+  const isCorrect = Object.values(answers).includes(correct);
+
   return (
     <div className="flex flex-col gap-2">
-      <h2 className="text-sm">
+      <h2 className="text-xs md:text-sm">
         Question {id}) {question}
       </h2>
-      <Alert className={"w-full md:w-1/2"} variant={cn(isCorrect ? "success" : "destructive",)}>
-        <CircleX className="h-4 w-4" />
-        <AlertTitle>Candidate's answer</AlertTitle>
-        <AlertDescription>{answers[id]}</AlertDescription>
+      <Alert
+        className={"w-full md:w-1/2"}
+        variant={cn(isCorrect ? "success" : "destructive")}
+      >
+        {isCorrect ? (
+          <CircleCheckBig className="h-4 w-4" />
+        ) : (
+          <CircleX className="h-4 w-4" />
+        )}
+        <AlertTitle className="text-xs md:text-sm">Candidate's answer</AlertTitle>
+        <AlertDescription className="text-xs md:text-sm">{answers[id]}</AlertDescription>
       </Alert>
       <Alert className={"w-full md:w-1/2"} variant="success">
         <CircleCheckBig className="h-4 w-4" />
-        <AlertTitle>Correct Answer</AlertTitle>
-        <AlertDescription>{correct}</AlertDescription>
+        <AlertTitle className="text-xs md:text-sm">Correct Answer</AlertTitle>
+        <AlertDescription className="text-xs md:text-sm">{correct}</AlertDescription>
       </Alert>
     </div>
   );

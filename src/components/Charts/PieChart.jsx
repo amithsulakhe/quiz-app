@@ -19,7 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FadeUp } from "../Animations/animation";
+import { FadeUp, SlideRight } from "../Animations/animation";
 
 // Custom tooltip to display percentage
 const CustomTooltip = ({ active, payload }) => {
@@ -43,7 +43,7 @@ const CustomPieChart = () => {
   const COLORS = ["#41644A", "#B82132"];
 
   return (
-    <FadeUp>
+    <SlideRight delay={2} duration={1} x={200}>
       <Card>
         <CardHeader>
           <CardTitle>Pie Chart</CardTitle>
@@ -78,7 +78,7 @@ const CustomPieChart = () => {
           </ResponsiveContainer>
         </CardContent>
       </Card>
-    </FadeUp>
+    </SlideRight>
   );
 };
 

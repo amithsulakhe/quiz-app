@@ -41,3 +41,16 @@ export const SlideLeft = ({ children,delay=2,x=-100,duration=0.5,className}) => 
     </motion.div>
   );
 };
+
+export const SlideRight = ({ children,delay=2,x=100,duration=0.5,className}) => {
+  return (
+    <motion.div
+    initial={{ opacity: 0, x }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration, delay: delay* 0.1 }}
+      className={cn(className)}
+    >
+      {children}
+    </motion.div>
+  );
+};

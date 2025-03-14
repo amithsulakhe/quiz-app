@@ -18,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FadeUp } from "../Animations/animation";
+import { FadeUp, SlideLeft } from "../Animations/animation";
 
 const CustomBarChart = () => {
   const data = [
@@ -27,7 +27,7 @@ const CustomBarChart = () => {
   ];
 
   return (
-    <FadeUp >
+    <SlideLeft x={-200} duration={2} delay={1}>
     <Card>
       <CardHeader>
         <CardTitle>Bar Chart</CardTitle>
@@ -89,7 +89,7 @@ const CustomBarChart = () => {
         </ResponsiveContainer>
       </CardContent>
     </Card>
-    </FadeUp>
+    </SlideLeft>
 
   );
 };

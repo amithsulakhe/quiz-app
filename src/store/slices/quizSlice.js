@@ -6,9 +6,9 @@ const initialState = {
   loading: false,
   error: null,
   submitted: false,
-  score: 0,
   quizStarted: false,
-  isFeedback:false
+  isFeedback:false,
+  totalQuestions:5
 }
 
 export const quizSlice = createSlice({
@@ -28,12 +28,7 @@ export const quizSlice = createSlice({
       }
       state.questions.push(question)
     },
-    startQuiz: (state) => {
-      state.quizStarted = true;
-      state.submitted = false;
-      state.answers = {};
-      state.score = 0;
-    },
+  
     setAnswer: (state, action) => {
       const { questionId, answer } = action.payload;
       state.answers[questionId] = answer;
@@ -44,7 +39,6 @@ export const quizSlice = createSlice({
     resetQuiz: (state) => {
       state.answers = {};
       state.submitted = false;
-      state.score = 0;
       state.questions=[];
     },
   },
@@ -55,7 +49,6 @@ export const {
   setError, 
   setQuestions, 
   setAnswer, 
-  startQuiz,
   resetQuiz ,
   setIsFeedback
 } = quizSlice.actions
