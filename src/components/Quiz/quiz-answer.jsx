@@ -12,9 +12,9 @@ const QuizAnswer = ({ question, correct, id, answers }) => {
       </h2>
       <Alert
         className={"w-full md:w-1/2"}
-        variant={cn(isCorrect ? "success" : "destructive")}
+        variant={cn(isCorrect && correct===answers[id] ? "success" : "destructive")}
       >
-        {isCorrect ? (
+        {isCorrect && correct===answers[id] ? (
           <CircleCheckBig className="h-4 w-4" />
         ) : (
           <CircleX className="h-4 w-4" />
