@@ -30,6 +30,7 @@ const QuizChat = () => {
   const containerRef = useRef(null);
 
   const { theme } = useTheme();
+
   const isSubmitted = useBoolean();
   const isQuizResults = useBoolean();
 
@@ -195,6 +196,8 @@ const QuizChat = () => {
     return <Error error={error} />;
   }
 
+  console.log(count);
+
   return (
     <WrapperComponent>
       <div className="flex flex-col h-[80vh] relative">
@@ -277,11 +280,20 @@ const QuizChat = () => {
           <div className="container mx-auto px-4 md:max-w-3/4">
             {count === totalQuestions ? (
               <Button
-                disabled={isSubmitted.value}
+                disabled={isSubmitted.value || loading}
                 onClick={handleSubmitQuiz}
                 className="w-full h-10 cursor-pointer"
               >
-                {isSubmitted.value ? "Submitted" : "Submit Quiz"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    loading Question...
+                  </>
+                ) : isSubmitted.value ? (
+                  "Submitted"
+                ) : (
+                  "Submit Quiz"
+                )}
               </Button>
             ) : (
               <Button
@@ -292,7 +304,9 @@ const QuizChat = () => {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    loading Question...
+                    {isSubmitted.value
+                      ? "Submitting..."
+                      : " loading Question..."}
                   </>
                 ) : isFeedback ? (
                   "Try again"

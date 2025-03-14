@@ -3,7 +3,7 @@ import { HashLoader } from 'react-spinners'
 
 const Loader = ({ text = "Loading quiz questions..." }) => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background/50 backdrop-blur-sm">
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background/50 backdrop-blur-sm">
       <div className="text-center space-y-6">
         <HashLoader 
           color="#7C3AED" 
