@@ -166,12 +166,12 @@ class QuizHelper {
       {
         name: "Correct",
         value: correctAnsSum,
-        percentage: `${correctAnsSum * 10}`,
+        percentage: `${correctAnsSum * 10*2}`,
       },
       {
         name: "Incorrect",
         value: incorrectAnsSum,
-        percentage: `${incorrectAnsSum * 10}`,
+        percentage: `${incorrectAnsSum * 10*2}`,
       },
     ];
     return {
