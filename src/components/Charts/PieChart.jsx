@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload }) => {
 };
 const CustomPieChart = ({questions,answers}) => {
   const {pieData}=quizHelper.generateChartData(questions,answers)
-  const COLORS = ["#66BB6A", "#FF8A80"];  
+  const COLORS = ["#22577A", "#FF7F50"]; 
   return (
     <SlideRight delay={2} duration={1} x={200}>
       <Card>
