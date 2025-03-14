@@ -159,8 +159,8 @@ class QuizHelper {
     }, 0);
     const incorrectAnsSum = questions.length - correctAnsSum;
     const barData = [
-      { name: "Correct", value: correctAnsSum, fill: "#41644A" },
-      { name: "Incorrect", value: incorrectAnsSum, fill: "#B82132" },
+      { name: "Correct", value: correctAnsSum, fill: "#66BB6A" },
+      { name: "Incorrect", value: incorrectAnsSum, fill: "#FF8A80" },
     ];
     const pieData = [
       {
