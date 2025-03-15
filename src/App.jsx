@@ -5,8 +5,8 @@ import { lazy, Suspense } from "react";
 import Loader from "./components/Quiz/loader";
 
 // lazy loading and code splitting
-const HomePage=lazy(()=>import("./components/home/home-page"))
-const QuizChat=lazy(()=>import("./components/chat/quiz-chat"))
+const HomePage=lazy(()=>import("./components/home/home-page.jsx"))
+const QuizChat=lazy(()=>import("./components/chat/quiz-chat.jsx"))
 
 
 const App = () => {
