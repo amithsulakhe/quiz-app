@@ -8,6 +8,7 @@ import { ThemeProvider } from "./components/theme-provider";
 import OfflineOnlineProvider from "./offline-online-provider";
 import { Toaster } from "./components/ui/sonner";
 
+// main file
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <OfflineOnlineProvider>
