@@ -10,12 +10,12 @@ import { useParams } from "react-router-dom";
 import { PacmanLoader, PulseLoader } from "react-spinners";
 import CustomBarChart from "../charts/bar-chart";
 import CustomPieChart from "../charts/pie-chart";
-import Error from "../Quiz/error";
-import Loader from "../Quiz/loader";
-import QuizAnalysis from "../Quiz/quiz-analysis";
-import QuizResults from "../Quiz/quiz-results";
-import Validator from "../Quiz/validator";
-import WrapperComponent from "../Quiz/wrapper-component";
+import Error from "../quiz/error";
+import Loader from "../quiz/loader";
+import QuizAnalysis from "../quiz/quiz-analysis";
+import QuizResults from "../quiz/quiz-results";
+import Validator from "../quiz/validator";
+import WrapperComponent from "../quiz/wrapper-component";
 import { useTheme } from "../theme-provider";
 import NextSubmitButton from "./next-submit-btn";
 import QuestionChat from "./question-chat";
@@ -207,7 +207,7 @@ const QuizChat = () => {
         >
           <div className="w-full">
             <h2 className="text-3xl text-center font-bold mb-6 capitalize">
-              {currentSubject} Quiz
+              {currentSubject} quiz
             </h2>
 
             {groupedMessages.map((group, groupIndex) => (
