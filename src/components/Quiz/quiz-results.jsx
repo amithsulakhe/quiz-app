@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import QuizAnswer from "./quiz-answer";
 import { useSelector } from "react-redux";
-import { FadeUp, SlideLeft } from "../Animations/animation";
+import { FadeUp, SlideLeft } from "../animations/animation";
 
 const QuizResults = () => {
   const {answers, questions } = useSelector((state) => state.quiz);

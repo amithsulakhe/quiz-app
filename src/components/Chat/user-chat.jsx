@@ -1,4 +1,4 @@
-import { SlideLeft } from "../Animations/animation";
+import { SlideLeft } from "../animations/animation";
 
 const UserChat = ({ message }) => {
   return (

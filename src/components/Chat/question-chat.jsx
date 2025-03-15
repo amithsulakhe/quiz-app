@@ -1,6 +1,6 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "../ui/label";
-import { FadeUp, SlideLeft } from "../Animations/animation";
+import { FadeUp, SlideLeft } from "../animations/animation";
 
 const QuestionPage = ({
   currentQuestion,

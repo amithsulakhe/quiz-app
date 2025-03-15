@@ -6,7 +6,7 @@ import Loader from "./components/Quiz/loader";
 
 // lazy loading and code splitting
 const HomePage=lazy(()=>import("./components/Home/home-page"))
-const QuizChat=lazy(()=>import("./components/Chat/quiz-chat"))
+const QuizChat=lazy(()=>import("./components/chat/quiz-chat"))
 
 
 const App = () => {
