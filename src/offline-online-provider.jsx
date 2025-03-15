@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { toast } from "sonner";
 
+// offline online
 const OfflineOnlineProvider = ({ children }) => {
   useEffect(() => {
     const handleOnline = () => {

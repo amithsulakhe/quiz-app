@@ -1,7 +1,7 @@
-// components/Animations/FadeIn.jsx
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
+// fade in from bottom to top
 export const FadeIn = ({ children ,delay=2,className}) => {
   return (
     <motion.div
@@ -15,6 +15,8 @@ export const FadeIn = ({ children ,delay=2,className}) => {
   );
 };
 
+
+// fade from top to bottom
 export const FadeUp = ({ children, delay = 0.2, className = "" }) => {
   return (
     <motion.div
@@ -29,6 +31,7 @@ export const FadeUp = ({ children, delay = 0.2, className = "" }) => {
   );
 };
 
+// animate from left to right 
 export const SlideLeft = ({ children,delay=2,x=-100,duration=0.5,className}) => {
   return (
     <motion.div
@@ -42,6 +45,7 @@ export const SlideLeft = ({ children,delay=2,x=-100,duration=0.5,className}) => 
   );
 };
 
+// animate from right to left 
 export const SlideRight = ({ children,delay=2,x=100,duration=0.5,className}) => {
   return (
     <motion.div

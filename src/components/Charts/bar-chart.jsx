@@ -1,26 +1,26 @@
-import React from "react";
-import {
-  Bar,
-  CartesianGrid,
-  BarChart,
-  Legend,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Cell,
-  ResponsiveContainer,
-} from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
-import { FadeUp, SlideLeft } from "../animations/animation";
 import quizHelper from "@/utils/helper-functions";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from "recharts";
+import { SlideLeft } from "../animations/animation";
 
+
+
+// bar chart
 const CustomBarChart = ({questions,answers}) => {
   const {barData}=quizHelper.generateChartData(questions,answers)
   console.log(barData);

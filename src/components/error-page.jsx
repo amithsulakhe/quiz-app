@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { HomeIcon, RefreshCcw } from "lucide-react"
 
+
+// error page 404 page not found
 const ErrorPage = () => {
   const navigate = useNavigate();
 

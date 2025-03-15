@@ -13,10 +13,11 @@ import { Badge } from "../ui/badge";
 
 const MotionCard = motion.create(Card)
 
-
+// sub card
 const SubCardPage = ({id, code,title, description, icon:Icon, color, index}) => {
     const navigate = useNavigate();
 
+    // start quiz
     const handleStartQuiz = (subjectCode) => {
       navigate(`/quiz/${subjectCode}`);
     }

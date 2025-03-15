@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+// quiz wrapper component
 const QuizWrapperComponent = ({ children }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

@@ -2,11 +2,10 @@
 
 import { subjects } from '@/utils/constant'
 import { motion } from "framer-motion"
-import SubCardPage from './sub-cardPage'
+import SubCardPage from './sub-card-page'
 
 
-
-
+// home page
 const HomePage = () => {
   return (
     <div className="container mx-auto p-4 min-h-screen">

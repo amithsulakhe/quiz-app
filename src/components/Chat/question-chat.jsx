@@ -2,13 +2,17 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "../ui/label";
 import { FadeUp, SlideLeft } from "../animations/animation";
 
+
+
+
+// question chat
+
 const QuestionPage = ({
   currentQuestion,
   answers,
   handleAnswerSelect,
   count,
 }) => {
-  console.log(count);
 
   return (
     <div className="mb-6 w-full md:w-1/2 m-auto space-y-4">

@@ -1,6 +1,8 @@
 import React from 'react'
 import { PuffLoader } from 'react-spinners'
 
+
+// validator
 const Validator = ({ text = "Validating quiz..." }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background/50 backdrop-blur-sm">

@@ -1,15 +1,11 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  CardContent
 } from "@/components/ui/card";
-import QuizAnswer from "./quiz-answer";
 import { useSelector } from "react-redux";
-import { FadeUp, SlideLeft } from "../animations/animation";
+import { FadeUp } from "../animations/animation";
+import QuizAnswer from "./quiz-answer";
 
+// quiz results 
 const QuizResults = () => {
   const {answers, questions } = useSelector((state) => state.quiz);
 

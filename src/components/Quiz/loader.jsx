@@ -1,6 +1,8 @@
 import React from 'react'
 import { HashLoader } from 'react-spinners'
 
+
+// loader 
 const Loader = ({ text = "Loading quiz questions..." }) => {
   return (
     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-background/50 backdrop-blur-sm">

@@ -11,6 +11,8 @@ const initialState = {
   totalQuestions:5
 }
 
+
+// quiz slice
 export const quizSlice = createSlice({
   name: 'quiz',
   initialState,

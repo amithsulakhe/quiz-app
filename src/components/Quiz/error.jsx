@@ -4,6 +4,9 @@ import { Card } from "@/components/ui/card"
 import { AlertCircle, RefreshCcw } from "lucide-react"
 import { motion } from "framer-motion"
 
+
+
+// error page
 const Error = ({ error }) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background/50 backdrop-blur-sm p-4">

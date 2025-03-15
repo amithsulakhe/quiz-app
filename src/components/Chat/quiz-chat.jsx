@@ -1,36 +1,35 @@
-import { Button } from "@/components/ui/button";
+import useBoolean from "@/hooks/use-boolean";
 import useFetch from "@/hooks/use-fetch";
 import { clearChat, setMessage } from "@/store/slices/chat-slice";
 import { resetQuiz, setAnswer, setIsFeedback } from "@/store/slices/quiz-slice";
 import { subjects } from "@/utils/constant";
 import quizHelper from "@/utils/helper-functions";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { PacmanLoader, PulseLoader } from "react-spinners";
+import CustomBarChart from "../charts/bar-chart";
+import CustomPieChart from "../charts/pie-chart";
 import Error from "../Quiz/error";
 import Loader from "../Quiz/loader";
+import QuizAnalysis from "../Quiz/quiz-analysis";
+import QuizResults from "../Quiz/quiz-results";
+import Validator from "../Quiz/validator";
+import WrapperComponent from "../Quiz/wrapper-component";
+import { useTheme } from "../theme-provider";
+import NextSubmitButton from "./next-submit-btn";
 import QuestionChat from "./question-chat";
 import SystemChat from "./system-chat";
 import UserChat from "./user-chat";
-import Validator from "../Quiz/validator";
-import { Loader2 } from "lucide-react";
-import { PacmanLoader, PulseLoader } from "react-spinners";
-import { useTheme } from "../theme-provider";
-import { cn } from "@/lib/utils";
-import WrapperComponent from "../Quiz/wrapper-component";
-import useBoolean from "@/hooks/use-boolean";
-import CustomBarChart from "../Charts/bar-chart";
-import CustomPieChart from "../Charts/pie-chart";
-import QuizResults from "../Quiz/quiz-results";
-import QuizAnalysis from "../Quiz/quiz-analysis";
 
+// main component quiz
 const QuizChat = () => {
   // state
   const [count, setCount] = useState(1);
   const containerRef = useRef(null);
 
+  // custom hooks
   const { theme } = useTheme();
-
   const isSubmitted = useBoolean();
   const isQuizResults = useBoolean();
 
@@ -70,12 +69,12 @@ const QuizChat = () => {
   };
 
   // for next question
-  const handleNext = async () => {
+  const handleNext =useCallback( async () => {
     dispatch(
       setMessage({
         sender: "user",
-        qid: currentQuestion.id,
-        answer: `${answers[currentQuestion.id]}`,
+        qid: currentQuestion?.id,
+        answer: `${answers[currentQuestion?.id]}`,
       })
     );
     setCount((prev) => prev + 1);
@@ -86,17 +85,18 @@ const QuizChat = () => {
       setIsValidated,
       dispatch
     );
-  };
+  },[answers, currentQuestion?.id, dispatch, navigate, revalidate, setIsValidated, subjectCode])
 
-  // click handler to submit quiz
-  const handleSubmitQuiz = () => {
+
+  // click handler to submit quiz 
+  const handleSubmitQuiz = useCallback(() => {
     if (!isSubmitted.value) {
       setCount((prev) => prev + 1);
       dispatch(
         setMessage({
           sender: "user",
-          qid: currentQuestion.id,
-          answer: `${answers[currentQuestion.id]}`,
+          qid: currentQuestion?.id,
+          answer: `${answers[currentQuestion?.id]}`,
         })
       );
       dispatch(
@@ -108,9 +108,10 @@ const QuizChat = () => {
       );
       isSubmitted.onTrue();
     }
-  };
+  },[answers, currentQuestion?.id, dispatch, isSubmitted])
 
-  const handleReset = async () => {
+  // quiz try again
+  const handleReset = useCallback(async () => {
     try {
       setCount(1);
       dispatch(resetQuiz());
@@ -126,7 +127,7 @@ const QuizChat = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  },[dispatch, navigate, revalidate, setIsValidated, subjectCode])
 
   // to render next question
   useEffect(() => {
@@ -141,6 +142,7 @@ const QuizChat = () => {
     }
   }, [currentQuestion, dispatch]);
 
+  // scroll automatically
   useEffect(() => {
     if (containerRef.current && count !== 1) {
       containerRef.current.scrollTo({
@@ -163,37 +165,24 @@ const QuizChat = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [answers, isSubmitted.value]);
 
-  
-  // Group messages by question to add separation
-const groupedMessages = [];
-let currentGroup = [];
+  // optimising performance
+  const groupedMessages = useMemo(() => {
+    // Group messages by question to add separation
+    const groupedMessages = [];
+    let currentGroup = [];
 
-messages.forEach((message) => {
-  if (message.sender === "question" && currentGroup.length) {
-    groupedMessages.push(currentGroup);
-    currentGroup = [];
-  }
-  currentGroup.push(message);
-});
+    messages.forEach((message) => {
+      if (message.sender === "question" && currentGroup.length) {
+        groupedMessages.push(currentGroup);
+        currentGroup = [];
+      }
+      currentGroup.push(message);
+    });
 
-// last message
-if (currentGroup.length) groupedMessages.push(currentGroup);
-
-
-  console.log('====================================');
-  console.log("message",messages);
-  console.log('====================================');
-
-  
-  console.log('====================================');
-  console.log("groupedMessages",groupedMessages);
-  console.log('====================================');
-
-
-    
-  console.log('====================================');
-  console.log("currentGroup",currentGroup);
-  console.log('====================================');
+    // last message
+    if (currentGroup.length) groupedMessages.push(currentGroup);
+    return groupedMessages;
+  }, [messages]);
 
   // Don't render anything until validation is complete
   if (!isValidated) {
@@ -208,8 +197,6 @@ if (currentGroup.length) groupedMessages.push(currentGroup);
   if (error) {
     return <Error error={error} />;
   }
-
-  console.log(count);
 
   return (
     <WrapperComponent>
@@ -226,7 +213,7 @@ if (currentGroup.length) groupedMessages.push(currentGroup);
             {groupedMessages.map((group, groupIndex) => (
               <div key={`group-${groupIndex}`} className="mb-12 border-b pb-8">
                 {group.map((message) => (
-                  <Fragment key={message.id}>
+                  <Fragment key={message?.id}>
                     {message.sender === "system" && (
                       <SystemChat message={message} />
                     )}
@@ -276,7 +263,7 @@ if (currentGroup.length) groupedMessages.push(currentGroup);
               ) : (
                 <QuizAnalysis isQuizResults={isQuizResults}>
                   <div className="w-full md:w-[80%] m-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <CustomBarChart  questions={questions} answers={answers}/>
+                    <CustomBarChart questions={questions} answers={answers} />
                     <CustomPieChart questions={questions} answers={answers} />
                   </div>
                 </QuizAnalysis>
@@ -284,52 +271,14 @@ if (currentGroup.length) groupedMessages.push(currentGroup);
           </div>
         </div>
 
-        <div
-          className={cn(
-            "fixed bottom-0 left-0 right-0 py-4  border-t shadow-lg",
-            theme === "light" ? "bg-white" : "bg-black"
-          )}
-        >
-          <div className="container mx-auto px-4 md:max-w-3/4">
-            {count === totalQuestions ? (
-              <Button
-                disabled={isSubmitted.value || loading}
-                onClick={handleSubmitQuiz}
-                className="w-full h-10 cursor-pointer"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    loading Question...
-                  </>
-                ) : isSubmitted.value ? (
-                  "Submitted"
-                ) : (
-                  "Submit Quiz"
-                )}
-              </Button>
-            ) : (
-              <Button
-                disabled={(!answers[count] || loading) && !isFeedback}
-                onClick={isFeedback ? () => handleReset() : () => handleNext()}
-                className="w-full cursor-pointer py-5"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    {isSubmitted.value
-                      ? "Submitting..."
-                      : " loading Question..."}
-                  </>
-                ) : isFeedback ? (
-                  "Try again"
-                ) : (
-                  "Next"
-                )}
-              </Button>
-            )}
-          </div>
-        </div>
+          {/* submit button */}
+        <NextSubmitButton
+          count={count}
+          handleNext={handleNext}
+          handleReset={handleReset}
+          handleSubmitQuiz={handleSubmitQuiz}
+          isSubmitted={isSubmitted}
+        />
       </div>
     </WrapperComponent>
   );

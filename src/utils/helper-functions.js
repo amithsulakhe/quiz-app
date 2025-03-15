@@ -7,12 +7,16 @@ import {
 } from "@/store/slices/quiz-slice";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+
+// quiz helper class
 class QuizHelper {
   constructor() {
+    // instance
     this.genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
     this.model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   }
 
+  // generate question
   async generateQuizQuestions(subjectName) {
     try {
       const prompt = `
@@ -54,6 +58,7 @@ class QuizHelper {
     }
   }
 
+  // loading function
   async loadQuestions(subjectId, dispatch) {
     dispatch(setLoading(true));
     dispatch(setError(null));
@@ -78,10 +83,12 @@ class QuizHelper {
     }
   }
 
+  // finder function
   finderFunction(arr, key, value) {
     return Array.isArray(arr) ? arr.find((ele) => ele[key] === value) : false;
   }
 
+  // for validation correct subject
   async validateAndLoad(
     subjects,
     subjectCode,
@@ -100,6 +107,8 @@ class QuizHelper {
     await this.loadQuestions(subjectCode, dispatch);
   }
 
+
+  // feedback generate
   async generateFeedBack(question, answers, isSubmitted, dispatch) {
     dispatch(setLoading(true));
     dispatch(setError(null));
@@ -150,6 +159,8 @@ class QuizHelper {
     }
   }
 
+
+  // generate chart data
   generateChartData(questions, answers) {
     const correctAnsSum = questions.reduce((acc, question) => {
       if (answers[question.id] === question.correct) {

@@ -7,6 +7,8 @@ import {
   CardTitle,
 } from "../ui/card";
 
+
+// quiz analysis
 const QuizAnalysis = ({ children, isQuizResults }) => {    
   return (
     <Card>

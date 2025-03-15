@@ -1,10 +1,10 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "./theme-provider";
-import { Link } from "react-router-dom";
 
+// header
 const Header = () => {
+  // custom themes
   const { theme, setTheme } = useTheme();
-
   const isDark = theme === "dark";
 
  

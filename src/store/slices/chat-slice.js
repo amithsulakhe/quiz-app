@@ -11,6 +11,8 @@ const initialState = {
   ],
 };
 
+
+// chat message
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,

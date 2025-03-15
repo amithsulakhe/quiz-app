@@ -2,6 +2,8 @@ import { cn } from "@/lib/utils";
 import { FadeIn } from "../animations/animation";
 import { useTheme } from "../theme-provider";
 
+
+// system chat
 const SystemChat = ({ message }) => {
   const { theme } = useTheme();
   return (

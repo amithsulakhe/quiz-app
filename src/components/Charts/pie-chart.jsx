@@ -1,26 +1,20 @@
 import {
-  Bar,
-  CartesianGrid,
-  BarChart,
-  Legend,
-  Tooltip,
-  XAxis,
-  YAxis,
-  Cell,
-  ResponsiveContainer,
-  Pie,
-  PieChart,
-} from "recharts";
-import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
-  CardTitle,
+  CardTitle
 } from "@/components/ui/card";
-import { FadeUp, SlideRight } from "../animations/animation";
 import quizHelper from "@/utils/helper-functions";
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip
+} from "recharts";
+import { SlideRight } from "../animations/animation";
 
 // Custom tooltip to display percentage
 const CustomTooltip = ({ active, payload }) => {
@@ -35,6 +29,9 @@ const CustomTooltip = ({ active, payload }) => {
   }
   return null;
 };
+
+
+// pie chart
 const CustomPieChart = ({questions,answers}) => {
   const {pieData}=quizHelper.generateChartData(questions,answers)
   const COLORS = ["#22577A", "#FF7F50"]; 
@@ -58,7 +55,6 @@ const CustomPieChart = ({questions,answers}) => {
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
-                // label={({ name, percentage }) => `${name}: ${percentage}%`}
               >
                 {pieData.map((entry, index) => (
                   <Cell

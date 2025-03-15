@@ -2,6 +2,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { CircleCheckBig, CircleX, Terminal } from "lucide-react";
 
+
+// quiz answer
 const QuizAnswer = ({ question, correct, id, answers }) => {
   const isCorrect = Object.values(answers).includes(correct);
 

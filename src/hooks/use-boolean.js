@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+
+// boolean hook
 const useBoolean = () => {
   const [value, setValue] = useState(false);
 

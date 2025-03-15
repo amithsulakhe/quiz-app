@@ -1,5 +1,7 @@
 import { SlideLeft } from "../animations/animation";
 
+
+// user chat
 const UserChat = ({ message }) => {
   return (
     <SlideLeft className="p-3 mb-4  flex flex-col  shadow-lg gap-4 rounded-md rounded-tr-none bg-gradient-to-r  from-indigo-600 to-purple-700 max-w-60 ml-auto">
