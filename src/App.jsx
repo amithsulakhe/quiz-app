@@ -2,11 +2,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayot from "./root-layot";
 import ErrorPage from "./components/error-page";
 import { lazy, Suspense } from "react";
-import Loader from "./components/quiz/loader.jsx";
-import HomePage from "./components/home/home-page.jsx";
-import QuizChat from "./components/chat/quiz-chat.jsx";
+import Loader from "./components/quiz/loader";
 
 // lazy loading and code splitting
+const HomePage=lazy(()=>import("./components/home/home-page"))
+const QuizChat=lazy(()=>import("./components/chat/quiz-chat"))
 
 
 const App = () => {
@@ -19,11 +19,11 @@ const App = () => {
       children:[
         {
           path:"/",
-          element:<HomePage />
+          element:<Suspense fallback={<Loader/>}><HomePage /></Suspense>
         },
         {
           path:"/quiz/:subjectCode",
-          element:<QuizChat />
+          element:<Suspense fallback={<Loader/>}><QuizChat /></Suspense>
         }
       ]
     }
