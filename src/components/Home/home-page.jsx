@@ -2,7 +2,7 @@
 
 import { subjects } from '@/utils/constant'
 import { motion } from "framer-motion"
-import SubCardPage from './SubCardPage'
+import SubCardPage from './sub-cardPage'
 
 
 

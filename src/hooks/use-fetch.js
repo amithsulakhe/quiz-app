@@ -1,5 +1,5 @@
 import { subjects } from "@/utils/constant";
-import quizHelper from "@/utils/helperfunctions";
+import quizHelper from "@/utils/helper-functions";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";

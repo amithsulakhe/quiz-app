@@ -20,7 +20,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FadeUp, SlideRight } from "../Animations/animation";
-import quizHelper from "@/utils/helperfunctions";
+import quizHelper from "@/utils/helper-functions";
 
 // Custom tooltip to display percentage
 const CustomTooltip = ({ active, payload }) => {

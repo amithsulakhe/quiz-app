@@ -1,10 +1,10 @@
-import { setMessage } from "@/store/slices/chatSlice";
+import { setMessage } from "@/store/slices/chat-slice";
 import {
   setError,
   setIsFeedback,
   setLoading,
   setQuestions,
-} from "@/store/slices/quizSlice";
+} from "@/store/slices/quiz-slice";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 class QuizHelper {

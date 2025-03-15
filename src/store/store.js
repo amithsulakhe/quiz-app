@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import quizReducer from "./slices/quizSlice";
-import chatReducer from "./slices/chatSlice";
+import quizReducer from "./slices/quiz-slice";
+import chatReducer from "./slices/chat-slice";
 
 const store = configureStore({
   reducer: {

@@ -1,5 +1,5 @@
-import { clearChat } from '@/store/slices/chatSlice';
-import { resetQuiz } from '@/store/slices/quizSlice';
+import { clearChat } from '@/store/slices/chat-slice';
+import { resetQuiz } from '@/store/slices/quiz-slice';
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

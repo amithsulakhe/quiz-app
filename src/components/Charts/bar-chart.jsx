@@ -19,7 +19,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FadeUp, SlideLeft } from "../Animations/animation";
-import quizHelper from "@/utils/helperfunctions";
+import quizHelper from "@/utils/helper-functions";
 
 const CustomBarChart = ({questions,answers}) => {
   const {barData}=quizHelper.generateChartData(questions,answers)
