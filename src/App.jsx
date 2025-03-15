@@ -4,7 +4,7 @@ import ErrorPage from "./components/error-page";
 import { lazy, Suspense } from "react";
 import Loader from "./components/quiz/loader";
 
-// lazy loading and code splitting
+// lazy loading and code splitting ..
 const HomePage=lazy(()=>import("./components/home/home-page"))
 const QuizChat=lazy(()=>import("./components/chat/quiz-chat"))
 
